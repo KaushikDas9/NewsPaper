@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:news_app/FireBase/Login.dart';
 
+
 class home extends StatefulWidget {
   const home({super.key});
 
@@ -68,7 +69,7 @@ class _homeState extends State<home> {
                   ])
         ],
       ),
-      body: Text("jdsbxj"),
+      body:  ,
     );
   }
 }
