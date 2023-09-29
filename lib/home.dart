@@ -19,6 +19,7 @@ class _homeState extends State<home> {
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.blue,
+          statusBarBrightness: Brightness.light,
         ),
         title: Text("All News"),
         actions: [
@@ -47,6 +48,7 @@ class _homeState extends State<home> {
                                     TextButton(
                                       child: Text("Yes"),
                                       onPressed: () {
+                                        _auth.signOut();
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
