@@ -33,6 +33,8 @@ class _homeState extends State<home> {
                         onTap: () => showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
                                   title: Text("Log out"),
                                   content: Text("Are you sure ? "),
                                   actions: [
