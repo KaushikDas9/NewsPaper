@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:news_app/FireBase/Login.dart';
+import 'package:news_app/Model/NewsApi.dart';
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -11,8 +15,77 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  List<newsModel> articlesList = [];
+  List<newsModel> articlesHeadindList = [];
+  List<String> articlesCategoryList = [];
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   TextEditingController searchController = TextEditingController();
+
+  Future<void> getArticles(String contentType) async {
+    articlesList.clear();
+    String api_key = "4b25b6f7358a4e1c9f88f5434066ec51";
+    var reponse = await get(Uri.parse(
+        "https://newsapi.org/v2/everything?q=$contentType&from=2023-08-30&sortBy=publishedAt&apiKey=$api_key"));
+    var body = json.decode(reponse.body);
+
+    // Putting in list
+    body["articles"].forEach((element) {
+      newsModel model = newsModel();
+      articlesList.add(newsModel.fromMap(element));
+    });
+
+    for (var i in articlesList) {
+      print(i.title.toString());
+    }
+    setState(() {});
+  }
+
+  Future<void> getHeadindArticles() async {
+    articlesHeadindList.clear();
+    String api_key = "4b25b6f7358a4e1c9f88f5434066ec51";
+    var reponse = await get(Uri.parse(
+        "https://newsapi.org/v2/top-headlines?country=in&apiKey=$api_key"));
+    var body = json.decode(reponse.body);
+
+    // Putting in list
+    body["articles"].forEach((element) {
+      newsModel model = newsModel();
+      articlesHeadindList.add(newsModel.fromMap(element));
+    });
+    for (var i in articlesHeadindList) {
+      print(i.title.toString());
+    }
+    setState(() {});
+  }
+
+  Future<void> getArticlesCategory() async {
+    articlesCategoryList.clear();
+    String api_key = "4b25b6f7358a4e1c9f88f5434066ec51";
+    var reponse = await get(Uri.parse(
+        "https://newsapi.org/v2/top-headlines/sources?apiKey=$api_key"));
+    var body = json.decode(reponse.body);
+
+    // Putting in list
+    body["sources"].forEach((element) {
+      newsModel model = newsModel();
+      if (!articlesCategoryList.contains(element["category"].toString()))
+        articlesCategoryList.add(element["category"].toString());
+    });
+    for (var i in articlesCategoryList) {
+      print("cate:");
+      print(i.toString());
+    }
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getHeadindArticles();
+    getArticlesCategory();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +153,13 @@ class _homeState extends State<home> {
               padding: const EdgeInsets.fromLTRB(12, 25, 12, 0),
               child: TextField(
                   controller: searchController,
+                  onTapOutside: (event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   textInputAction: TextInputAction.search,
                   onEditingComplete: () {
-                    print(searchController.text.toString());
                     FocusManager.instance.primaryFocus?.unfocus();
+                    getArticles(searchController.text.toString());
                   },
                   decoration: InputDecoration(
                       hintText: "Search for news",
@@ -92,10 +168,38 @@ class _homeState extends State<home> {
                       prefixIcon: InkWell(
                         child: Icon(Icons.search),
                         onTap: () {
-                          print(searchController.text.toString());
+                          getArticles(searchController.text.toString());
                           FocusManager.instance.primaryFocus?.unfocus();
                         },
                       ))),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Container(
+                    width: width,
+                    height: height * .05,
+                    // color: Colors.lightBlue,
+                    alignment: AlignmentDirectional.center,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text(
+                        "Top news From ${searchController.text.toUpperCase()}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                    )),
+                // Container(
+                //     width: width * .3,
+                //     height: height * .05,
+                //     // color: Colors.lightBlue,
+                //     alignment: AlignmentDirectional.centerEnd,
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(right: 15),
+                //       child:
+                //           ElevatedButton(onPressed: () {}, child: Text("More")),
+                //     ))
+              ]),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20),
@@ -104,7 +208,7 @@ class _homeState extends State<home> {
                 height: height * .038,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 15,
+                    itemCount: articlesCategoryList.length,
                     itemBuilder: (context, input) {
                       return InkWell(
                         onTap: () {},
@@ -113,8 +217,10 @@ class _homeState extends State<home> {
                           decoration: BoxDecoration(
                               color: Colors.blue,
                               borderRadius: BorderRadius.circular(12)),
-                          child:
-                              Center(child: Text("lets go"), widthFactor: 1.8),
+                          child: Center(
+                              child:
+                                  Text(articlesCategoryList[input].toString()),
+                              widthFactor: 1.8),
                         ),
                       );
                     }),
@@ -127,7 +233,7 @@ class _homeState extends State<home> {
                 height: height * .135,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 15,
+                    itemCount: articlesHeadindList.length,
                     itemBuilder: (context, input) {
                       return InkWell(
                         onTap: () {},
@@ -140,9 +246,12 @@ class _homeState extends State<home> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.network(
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.low,
-                                  "https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"),
+                                articlesHeadindList[input]
+                                    .urlToImage
+                                    .toString(),
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.low,
+                              ),
                             ),
                             Positioned(
                               bottom: 0,
@@ -184,28 +293,28 @@ class _homeState extends State<home> {
               padding: const EdgeInsets.only(top: 30),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Container(
-                    width: width * .5,
+                    width: width,
                     height: height * .05,
                     // color: Colors.lightBlue,
-                    alignment: AlignmentDirectional.centerStart,
+                    alignment: AlignmentDirectional.center,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: Text(
-                        "Any News Heading",
+                        "Top news From ${searchController.text.toUpperCase()}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                            fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                     )),
-                Container(
-                    width: width * .5,
-                    height: height * .05,
-                    // color: Colors.lightBlue,
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 15),
-                      child:
-                          ElevatedButton(onPressed: () {}, child: Text("More")),
-                    ))
+                // Container(
+                //     width: width * .3,
+                //     height: height * .05,
+                //     // color: Colors.lightBlue,
+                //     alignment: AlignmentDirectional.centerEnd,
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(right: 15),
+                //       child:
+                //           ElevatedButton(onPressed: () {}, child: Text("More")),
+                //     ))
               ]),
             ),
             Padding(
@@ -213,7 +322,7 @@ class _homeState extends State<home> {
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 100,
+                itemCount: articlesList.length,
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {},
@@ -225,7 +334,7 @@ class _homeState extends State<home> {
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                                "https://static.vecteezy.com/system/resources/thumbnails/006/299/370/original/world-breaking-news-digital-earth-hud-rotating-globe-rotating-free-video.jpg")),
+                                articlesList[index].urlToImage.toString())),
                         Positioned(
                           left: 0,
                           bottom: 0,
@@ -236,23 +345,19 @@ class _homeState extends State<home> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.black38),
-                            child: const Padding(
+                            child: Padding(
                               padding: EdgeInsets.only(left: 10),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "News Head",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "Descption",
-                                      style: TextStyle(color: Colors.white),
-                                    )
-                                  ]),
+                              child: SizedBox(
+                                width: width * .98,
+                                child: Text(
+                                  maxLines: 2,
+                                  articlesList[index].description.toString(),
+                                  style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
                             ),
                           ),
                         )
