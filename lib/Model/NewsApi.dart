@@ -5,16 +5,15 @@ class newsModel {
   late String? urlToImage;
   late String? publishedAt;
   late String? content;
-  late String? category;
 
-  newsModel(
-      {this.title = "title",
-      this.description = "decp",
-      this.url = "url",
-      this.urlToImage = "image",
-      this.publishedAt = "date and time",
-      this.content = "content",
-      this.category = "category"});
+  newsModel({
+    this.title = "title",
+    this.description = "decp",
+    this.url = "url",
+    this.urlToImage = "image",
+    this.publishedAt = "date and time",
+    this.content = "content",
+  });
 
   factory newsModel.fromMap(Map news) {
     return newsModel(
@@ -24,7 +23,6 @@ class newsModel {
       urlToImage: news["urlToImage"],
       publishedAt: news["publishedAt"],
       content: news["content"],
-      category: news["category"],
     );
   }
 }
