@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:news_app/FireBase/Login.dart';
 import 'package:news_app/home.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class webViewPage extends StatefulWidget {
-  const webViewPage({super.key});
+  final String url;
+  const webViewPage(this.url);
 
   @override
   State<webViewPage> createState() => _webViewPageState();
@@ -13,12 +15,26 @@ class webViewPage extends StatefulWidget {
 
 class _webViewPageState extends State<webViewPage> {
   FirebaseAuth _auth = FirebaseAuth.instance;
+
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // TODO: implement initState
+    controller = WebViewController()
+      ..loadRequest(
+        Uri.parse(widget.url),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.blue,
           statusBarBrightness: Brightness.light,
         ),
@@ -69,6 +85,7 @@ class _webViewPageState extends State<webViewPage> {
                   ])
         ],
       ),
+      body: WebViewWidget(controller: controller),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:news_app/FireBase/Login.dart';
 import 'package:news_app/Model/NewsApi.dart';
+import 'package:news_app/WebViewPageDesign.dart';
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -183,7 +184,9 @@ class _homeState extends State<home> {
                     itemCount: articlesCategoryList.length,
                     itemBuilder: (context, input) {
                       return InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          // Navigator.pushNamed(context,"/webViewPage",arguments:  );
+                        },
                         child: Container(
                           margin: EdgeInsets.symmetric(horizontal: 6),
                           decoration: BoxDecoration(
@@ -241,7 +244,15 @@ class _homeState extends State<home> {
                     itemCount: articlesHeadindList.length,
                     itemBuilder: (context, input) {
                       return InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => webViewPage(
+                                      articlesHeadindList[input]
+                                          .url
+                                          .toString())));
+                        },
                         child: Card(
                           elevation: 5,
                           shape: RoundedRectangleBorder(
@@ -323,7 +334,13 @@ class _homeState extends State<home> {
                 itemCount: articlesList.length,
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => webViewPage(
+                                  articlesList[index].url.toString())));
+                    },
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),

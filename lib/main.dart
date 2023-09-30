@@ -9,8 +9,8 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    const MaterialApp(
-      home: Splash_Screen(),
+    MaterialApp(
+      home: const Splash_Screen(),
     ),
   );
 }
