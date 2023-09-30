@@ -174,6 +174,36 @@ class _homeState extends State<home> {
                       ))),
             ),
             Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Container(
+                // color: Colors.black45,
+                height: height * .040,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: articlesCategoryList.length,
+                    itemBuilder: (context, input) {
+                      return InkWell(
+                        onTap: () {},
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Center(
+                              widthFactor: 1.5,
+                              child: Text(
+                                  articlesCategoryList[input]
+                                      .toString()
+                                      .toUpperCase(),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900))),
+                        ),
+                      );
+                    }),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.only(top: 30),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Container(
@@ -184,9 +214,9 @@ class _homeState extends State<home> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: Text(
-                        "Top news From ${searchController.text.toUpperCase()}",
+                        "Breaking News",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                     )),
                 // Container(
@@ -200,31 +230,6 @@ class _homeState extends State<home> {
                 //           ElevatedButton(onPressed: () {}, child: Text("More")),
                 //     ))
               ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Container(
-                // color: Colors.black45,
-                height: height * .038,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: articlesCategoryList.length,
-                    itemBuilder: (context, input) {
-                      return InkWell(
-                        onTap: () {},
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 6),
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Center(
-                              child:
-                                  Text(articlesCategoryList[input].toString()),
-                              widthFactor: 1.8),
-                        ),
-                      );
-                    }),
-              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 30),
@@ -294,27 +299,20 @@ class _homeState extends State<home> {
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 Container(
                     width: width,
-                    height: height * .05,
+                    height: height * .15,
                     // color: Colors.lightBlue,
                     alignment: AlignmentDirectional.center,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
                       child: Text(
-                        "Top news From ${searchController.text.toUpperCase()}",
+                        maxLines: 2,
+                        "LATEST NEWS ABOUT ${searchController.text.toUpperCase()}",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            overflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25),
                       ),
                     )),
-                // Container(
-                //     width: width * .3,
-                //     height: height * .05,
-                //     // color: Colors.lightBlue,
-                //     alignment: AlignmentDirectional.centerEnd,
-                //     child: Padding(
-                //       padding: const EdgeInsets.only(right: 15),
-                //       child:
-                //           ElevatedButton(onPressed: () {}, child: Text("More")),
-                //     ))
               ]),
             ),
             Padding(
