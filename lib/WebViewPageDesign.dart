@@ -14,8 +14,8 @@ class webViewPage extends StatefulWidget {
 }
 
 class _webViewPageState extends State<webViewPage> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
   InAppWebViewController? webViewController;
+  FirebaseAuth _auth = FirebaseAuth.instance;
   late bool isPageStarted = false;
   @override
   void initState() {
@@ -34,7 +34,22 @@ class _webViewPageState extends State<webViewPage> {
             statusBarBrightness: Brightness.light,
           ),
           title: Text("All News"),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined),
+            onPressed: () async {
+              if (await webViewController!.canGoBack()) {
+                webViewController!.goBack();
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
           actions: [
+            IconButton(
+                onPressed: () {
+                  webViewController!.reload();
+                },
+                icon: const Icon(Icons.refresh_outlined)),
             PopupMenuButton(
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -92,6 +107,7 @@ class _webViewPageState extends State<webViewPage> {
                 });
               },
               onLoadStart: (controller, url) {
+                webViewController = controller;
                 setState(() {
                   isPageStarted = true;
                 });

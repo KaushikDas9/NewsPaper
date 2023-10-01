@@ -16,6 +16,7 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  bool isSearched = false;
   List<newsModel> articlesList = [];
   List<newsModel> articlesHeadindList = [];
   List<String> articlesCategoryList = [];
@@ -37,7 +38,9 @@ class _homeState extends State<home> {
       articlesList.add(newsModel.fromMap(element));
     });
 
-    setState(() {});
+    setState(() {
+      isSearched = false;
+    });
   }
 
   Future<void> getHeadindArticles() async {
@@ -158,6 +161,9 @@ class _homeState extends State<home> {
                   textInputAction: TextInputAction.search,
                   onEditingComplete: () {
                     FocusManager.instance.primaryFocus?.unfocus();
+                    setState(() {
+                      isSearched = true;
+                    });
                     getArticles(searchController.text.toString());
                   },
                   decoration: InputDecoration(
@@ -167,6 +173,9 @@ class _homeState extends State<home> {
                       prefixIcon: InkWell(
                         child: Icon(Icons.search),
                         onTap: () {
+                          setState(() {
+                            isSearched = true;
+                          });
                           getArticles(searchController.text.toString());
                           FocusManager.instance.primaryFocus?.unfocus();
                         },
@@ -328,9 +337,12 @@ class _homeState extends State<home> {
               padding: const EdgeInsets.only(top: 20),
               child: Stack(
                 children: [
-                  Visibility(
-                    child: CircularProgressIndicator(),
-                    visible: true,
+                  Container(
+                    alignment: Alignment.center,
+                    child: Visibility(
+                      child: CircularProgressIndicator(),
+                      visible: isSearched,
+                    ),
                   ),
                   ListView.builder(
                     shrinkWrap: true,
