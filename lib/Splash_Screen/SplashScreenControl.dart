@@ -15,7 +15,7 @@ class Splash {
             (Route route) => false);
       });
     } else {
-      Timer(const Duration(seconds: 2), () {
+      Timer(const Duration(milliseconds: 100), () {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const home()),
             (Route route) => false);

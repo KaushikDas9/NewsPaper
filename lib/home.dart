@@ -24,10 +24,11 @@ class _homeState extends State<home> {
   TextEditingController searchController = TextEditingController();
 
   Future<void> getArticles(String contentType) async {
+    var apiDate = DateTime.now().month - 1;
     articlesList.clear();
     String api_key = "4b25b6f7358a4e1c9f88f5434066ec51";
     var reponse = await get(Uri.parse(
-        "https://newsapi.org/v2/everything?q=$contentType&from=2023-08-30&sortBy=publishedAt&apiKey=$api_key"));
+        "https://newsapi.org/v2/everything?q=$contentType&from=${DateTime.now().year}-$apiDate-${DateTime.now().day}&sortBy=publishedAt&apiKey=$api_key"));
     var body = json.decode(reponse.body);
 
     // Putting in list
@@ -36,9 +37,6 @@ class _homeState extends State<home> {
       articlesList.add(newsModel.fromMap(element));
     });
 
-    for (var i in articlesList) {
-      print(i.title.toString());
-    }
     setState(() {});
   }
 
@@ -318,7 +316,7 @@ class _homeState extends State<home> {
                       child: Text(
                         maxLines: 2,
                         "LATEST NEWS ABOUT ${searchController.text.toUpperCase()}",
-                        style: TextStyle(
+                        style: const TextStyle(
                             overflow: TextOverflow.ellipsis,
                             fontWeight: FontWeight.bold,
                             fontSize: 25),
@@ -328,58 +326,68 @@ class _homeState extends State<home> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: articlesList.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => webViewPage(
-                                  articlesList[index].url.toString())));
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      elevation: 5,
-                      child: Stack(children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                                articlesList[index].urlToImage.toString())),
-                        Positioned(
-                          left: 0,
-                          bottom: 0,
-                          child: Container(
-                            // alignment: Alignment.topLeft,
-                            width: width * .98,
-                            height: height * .05,
-                            decoration: BoxDecoration(
+              child: Stack(
+                children: [
+                  Visibility(
+                    child: CircularProgressIndicator(),
+                    visible: true,
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: articlesList.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => webViewPage(
+                                      articlesList[index].url.toString())));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          elevation: 5,
+                          child: Stack(children: [
+                            ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.black38),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: SizedBox(
+                                child: Image.network(
+                                    articlesList[index].urlToImage.toString())),
+                            Positioned(
+                              left: 0,
+                              bottom: 0,
+                              child: Container(
+                                // alignment: Alignment.topLeft,
                                 width: width * .98,
-                                child: Text(
-                                  maxLines: 2,
-                                  articlesList[index].description.toString(),
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                height: height * .05,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.black38),
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: SizedBox(
+                                    width: width * .98,
+                                    child: Text(
+                                      maxLines: 2,
+                                      articlesList[index]
+                                          .description
+                                          .toString(),
+                                      style: TextStyle(
+                                          overflow: TextOverflow.ellipsis,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        )
-                      ]),
-                    ),
-                  );
-                },
+                            )
+                          ]),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             )
           ],
