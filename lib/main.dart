@@ -10,6 +10,7 @@ Future main() async {
   );
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: const Splash_Screen(),
     ),
   );
