@@ -13,6 +13,7 @@ class signUp extends StatefulWidget {
 }
 
 class _signUpState extends State<signUp> {
+  bool showPassword = true;
   bool processWhenSignClick = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
@@ -67,6 +68,12 @@ class _signUpState extends State<signUp> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextFormField(
+                        onTapOutside: (PointerDownEvent) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        style: TextStyle(
+                            color: Colors.black.withOpacity(.7),
+                            fontWeight: FontWeight.bold),
                         controller: _email,
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -85,13 +92,27 @@ class _signUpState extends State<signUp> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: TextFormField(
+                        onTapOutside: (PointerDownEvent) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
                         controller: _passWord,
-                        obscureText: true,
-                        decoration: const InputDecoration(
+                        obscureText: showPassword,
+                        style: TextStyle(
+                            color: Colors.black.withOpacity(.7),
+                            fontWeight: FontWeight.bold),
+                        decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Enter your PassWord",
                             prefixIcon: Icon(Icons.lock_outline),
-                            suffixIcon: Icon(Icons.remove_red_eye),
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    showPassword = !showPassword;
+                                  });
+                                },
+                                icon: showPassword
+                                    ? Icon(Icons.remove_red_eye_outlined)
+                                    : Icon(Icons.remove_red_eye)),
                             labelText: "PassWord"),
                         onEditingComplete: () {},
                         validator: (value) {
