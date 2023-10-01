@@ -28,16 +28,17 @@ class _Splash_ScreenState extends State<Splash_Screen> {
         // actions: [Icon(Icons.ac_unit)],
       ),
       body: Container(
+          color: Colors.blueGrey.shade400,
           child: const Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.power),
-            Text("Welcome to our app "),
-          ],
-        ),
-      )),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.power),
+                Text("Welcome to our app "),
+              ],
+            ),
+          )),
     );
   }
 }

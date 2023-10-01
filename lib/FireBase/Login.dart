@@ -43,7 +43,8 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
-          height: height * .8,
+          color: Colors.blueGrey.shade300,
+          height: height,
           width: width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
